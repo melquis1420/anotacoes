@@ -9,7 +9,6 @@ class _HomeState extends State<Home> {
   TextEditingController _tituloController = TextEditingController();
   TextEditingController _descricaoController = TextEditingController();
 
-  //Show Alert Dialog
   _exibirTelaCadastro() {
     showDialog(
         context: context,
@@ -41,7 +40,7 @@ class _HomeState extends State<Home> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text("Salvar")),
+                  child: Text("Salvar"))
             ],
           );
         });
@@ -54,9 +53,7 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.green,
         title: Text("Minhas Anotações"),
       ),
-      body: Container(
-        color: Colors.black,
-      ),
+      body: Container(),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
         foregroundColor: Colors.white,
