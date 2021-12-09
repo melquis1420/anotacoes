@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+//remove include: package:flutter_lints/flutter.yaml in "analysis_options.yaml"
+
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -21,11 +23,13 @@ class _HomeState extends State<Home> {
                 TextField(
                   controller: _tituloController,
                   autofocus: true,
+                  // ignore: prefer_const_constructors
                   decoration: InputDecoration(
                       labelText: "Título", hintText: "Digite um título..."),
                 ),
                 TextField(
                   controller: _descricaoController,
+                  // ignore: prefer_const_constructors
                   decoration: InputDecoration(
                       labelText: "Descrição",
                       hintText: "Digite a descrição..."),
