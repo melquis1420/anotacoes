@@ -8,7 +8,7 @@ import 'package:path/path.dart';
 class AnotacaoHelper {
   static final String nomeTabela = "anotacao";
   static final AnotacaoHelper _anotacaoHelper = AnotacaoHelper._internal();
-  Database _db;
+  late Database _db;
 
   factory AnotacaoHelper() {
     return _anotacaoHelper;
@@ -47,5 +47,12 @@ class AnotacaoHelper {
     var bancoDados = await db;
     int resultado = await bancoDados.insert(nomeTabela, anotacao.toMap());
     return resultado;
+  }
+
+  recuperarAnotacoes() async {
+    var bancoDados = await db;
+    String sql = "SELECT * FROM $nomeTabela ORDER BY data DESC";
+    List anotacoes = await bancoDados.rawQuery(sql);
+    return anotacoes;
   }
 }
