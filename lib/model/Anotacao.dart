@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_null_comparison
-
 import 'package:anotacoes/helper/AnotacaoHelper.dart';
 
 class Anotacao {
@@ -16,6 +14,7 @@ class Anotacao {
     this.descricao = map["descricao"];
     this.data = map["data"];
   }
+
   Map toMap() {
     Map<String, dynamic> map = {
       "titulo": this.titulo,
@@ -23,9 +22,10 @@ class Anotacao {
       "data": this.data,
     };
 
-    if (id != null) {
+    if (this.id != null) {
       map["id"] = this.id;
     }
+
     return map;
   }
 }

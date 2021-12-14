@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:anotacoes/helper/AnotacaoHelper.dart';
 import 'package:anotacoes/model/Anotacao.dart';
 import 'package:flutter/material.dart';
@@ -19,12 +17,25 @@ class _HomeState extends State<Home> {
   var _db = AnotacaoHelper();
   List<Anotacao> _anotacoes = <Anotacao>[];
 
-  _exibirTelaCadastro() {
+  _exibirTelaCadastro({Anotacao? anotacao}) {
+    String textoSalvarAtualizar = "";
+    if (anotacao == null) {
+      //save
+      _tituloController.text = "";
+      _descricaoController.text = "";
+      textoSalvarAtualizar = "Salvar";
+    } else {
+      //update
+
+      _tituloController.text = anotacao.titulo;
+      _descricaoController.text = anotacao.descricao;
+      textoSalvarAtualizar = "Salvar";
+    }
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Adicionar anotação"),
+            title: Text("$textoSalvarAtualizar anotação"),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -49,11 +60,12 @@ class _HomeState extends State<Home> {
                   onPressed: () => Navigator.pop(context),
                   child: Text("Cancelar")),
               FlatButton(
-                  onPressed: () {
-                    _salvarAnotacao();
-                    Navigator.pop(context);
-                  },
-                  child: Text("Salvar"))
+                onPressed: () {
+                  _salvarAtualizarAnotacao(anotacaoSelecionada: anotacao);
+                  Navigator.pop(context);
+                },
+                child: Text(textoSalvarAtualizar),
+              )
             ],
           );
         });
@@ -74,13 +86,20 @@ class _HomeState extends State<Home> {
     listaTemporaria = null;
   }
 
-  _salvarAnotacao() async {
+  _salvarAtualizarAnotacao({Anotacao? anotacaoSelecionada}) async {
     String titulo = _tituloController.text;
     String descricao = _descricaoController.text;
-    //print("data atual: " + DateTime.now().toString());
-    Anotacao anotacao = Anotacao(titulo, descricao, DateTime.now().toString());
-    int resultado = await _db.salvarAnotacao(anotacao);
-    print("salvar anotacao: " + resultado.toString());
+
+    if (anotacaoSelecionada == null) {
+      Anotacao anotacao =
+          Anotacao(titulo, descricao, DateTime.now().toString());
+      int resultado = await _db.salvarAnotacao(anotacao);
+    } else {
+      anotacaoSelecionada.titulo = titulo;
+      anotacaoSelecionada.descricao = descricao;
+      anotacaoSelecionada.data = DateTime.now().toString();
+      int resutado = await _db.atualizarAnotacao(anotacaoSelecionada);
+    }
 
     _tituloController.clear();
     _descricaoController.clear();
@@ -124,17 +143,45 @@ class _HomeState extends State<Home> {
                         title: Text(anotacao.titulo),
                         subtitle: Text(
                             "${_formatarData(anotacao.data)}- ${anotacao.descricao}"),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                _exibirTelaCadastro(anotacao: anotacao);
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(right: 16),
+                                child: Icon(
+                                  Icons.edit,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {},
+                              child: Padding(
+                                padding: EdgeInsets.only(right: 0),
+                                child: Icon(
+                                  Icons.remove_circle,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     );
                   }))
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
-        child: Icon(Icons.add),
-        onPressed: _exibirTelaCadastro,
-      ),
+          backgroundColor: Colors.green,
+          foregroundColor: Colors.white,
+          child: Icon(Icons.add),
+          onPressed: () {
+            _exibirTelaCadastro();
+          }),
     );
   }
 }
