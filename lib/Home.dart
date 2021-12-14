@@ -42,13 +42,11 @@ class _HomeState extends State<Home> {
                 TextField(
                   controller: _tituloController,
                   autofocus: true,
-                  // ignore: prefer_const_constructors
                   decoration: InputDecoration(
                       labelText: "Título", hintText: "Digite um título..."),
                 ),
                 TextField(
                   controller: _descricaoController,
-                  // ignore: prefer_const_constructors
                   decoration: InputDecoration(
                       labelText: "Descrição",
                       hintText: "Digite a descrição..."),
@@ -93,12 +91,14 @@ class _HomeState extends State<Home> {
     if (anotacaoSelecionada == null) {
       Anotacao anotacao =
           Anotacao(titulo, descricao, DateTime.now().toString());
-      int resultado = await _db.salvarAnotacao(anotacao);
+      _recuperarAnotacoes();
+      //int resultado = await _db.salvarAnotacao(anotacao);
     } else {
       anotacaoSelecionada.titulo = titulo;
       anotacaoSelecionada.descricao = descricao;
       anotacaoSelecionada.data = DateTime.now().toString();
-      int resutado = await _db.atualizarAnotacao(anotacaoSelecionada);
+      _recuperarAnotacoes();
+      //int resutado = await _db.atualizarAnotacao(anotacaoSelecionada);
     }
 
     _tituloController.clear();
@@ -118,6 +118,11 @@ class _HomeState extends State<Home> {
     return dataformatada;
   }
 
+  _removerAnotacao(int id) async {
+    await _db.removerAnotacao(id);
+    _recuperarAnotacoes();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -126,6 +131,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    //_recuperarAnotacoes();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
@@ -159,7 +165,9 @@ class _HomeState extends State<Home> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                _removerAnotacao(anotacao.id);
+                              },
                               child: Padding(
                                 padding: EdgeInsets.only(right: 0),
                                 child: Icon(
